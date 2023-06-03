@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobMusicApp.PlaylistPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             Background="Gray">
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView Background="#bae8e8" Margin="5,5,5,0" x:Name="songsLv" SeparatorColor="Gray" ItemsSource="{Binding Songs}" ItemSelected="songsLv_ItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid ColumnDefinitions="1.40*,*,auto">
+                                    <Label
+                                        Grid.Column="0"
+                                        VerticalTextAlignment="Center"
+                                        Margin="5"
+                                        Text="{Binding Name}"
+                                        />
+                                    <Label
+                                        Grid.Column="1"
+                                        VerticalTextAlignment="Center"
+                                        Margin="5"
+                                        Text="{Binding Length}"
+                                        />
+                                    <Button
+                                        Grid.Column="2"
+                                        Text="Delete"
+                                        />
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Label Text="{Binding CurrentSong}"/>
+            <Grid ColumnDefinitions="Auto, Auto, Auto" RowDefinitions="Auto" Margin="0" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Grid.Column="0" Text="{Binding TimeProgress}"/>
+                <Label Grid.Column="1" Text="-"/>
+                <Label Grid.Column="2" Text="{Binding Length}"/>
+            </Grid>
+            <Slider x:Name="SongProgress" ThumbColor="#bae8e8" Margin="10,10"></Slider>
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="50" HorizontalOptions="Center" VerticalOptions="Center">
+
+                <ImageButton
+                    x:Name="Back"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="30,0,0,0"
+                    Padding="5"
+                    Source="Back.png"
+                    />
+
+                <ImageButton
+                    x:Name="Pause"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="15,0,15,0"
+                    Padding="5"
+                    Source="Pause.png"
+                    Clicked="Pause_Clicked"
+                    />
+                <ImageButton
+                    x:Name="Next"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="0,0,30,0"
+                    Padding="5"
+                    Source="Next.png"
+                    />
+
+            </Grid>
+            <Button x:Name="AddSong" Background="#bae8e8" Margin="20,10,20,10" Text="Add song" Clicked="AddSong_Clicked"></Button>
+            <xct:MediaElement AutoPlay="False"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

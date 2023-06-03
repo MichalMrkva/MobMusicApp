@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobMusicApp.PlaylistsPage"
+             Background="Gray"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView Background="#bae8e8" Margin="5" x:Name="playlistsLv" SeparatorColor="Gray" ItemsSource="{Binding Playlists}" ItemSelected="playlistsLv_ItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Grid ColumnDefinitions="1.40*,*,auto">
+                                    <Label
+                                        Grid.Column="0"
+                                        VerticalTextAlignment="Center"
+                                        Margin="5"
+                                        Text="{Binding Name}"
+                                        />
+                                    <Label
+                                        Grid.Column="1"
+                                        VerticalTextAlignment="Center"
+                                        Margin="5"
+                                        Text="{Binding Size}"
+                                        />
+                                    <Button
+                                        Grid.Column="2"
+                                        Text="Delete"
+                                        />
+                                </Grid>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Entry x:Name="PlaylistNameEntry" Placeholder="New Playlist Name" Background="#bae8e8" Margin="5,20,5,0" IsVisible="false"></Entry>
+            <Button x:Name="Addplaylist" Background="#bae8e8" Margin="5,20,5,20" Text="Add playlist" Clicked="Addplaylist_Clicked"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
