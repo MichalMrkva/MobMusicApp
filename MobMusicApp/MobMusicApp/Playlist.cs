@@ -11,7 +11,6 @@ namespace MobMusicApp
     {
         string filePathPlaylists = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Playlists.xml");
         string filePathSongsInFiles = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songs.xml");
-        private ObservableCollection<Song> _Songs;
         private TimeSpan _Max;
         public TimeSpan Max { 
             get => _Max;
@@ -32,6 +31,7 @@ namespace MobMusicApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentSong)));
             }
         }
+        private ObservableCollection<Song> _Songs;
         public ObservableCollection<Song> Songs
         {
             get { return _Songs; }
