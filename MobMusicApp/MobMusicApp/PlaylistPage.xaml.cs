@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,7 +14,7 @@ namespace MobMusicApp
     {
 
         public bool IsPlaying { get; set; } = false;
-        public bool FirstSongSelected { get; set; } = false;
+        public bool FirstSongSelected { get; set; } = true;
         DataCollections dc = new DataCollections(1);
         public PlaylistPage()
         {
@@ -25,7 +24,12 @@ namespace MobMusicApp
         }
         public void LoadPlaylist(string PlaylistName)
         {
-            dc.Songs.Clear();
+            ME.Source = null;
+            if (dc.Songs != null)
+            {
+                dc.Songs.Clear();
+            }
+            
             dc.Songs = dc.ReadSongsInPlaylistFromXml(PlaylistName);
         }
         private void AddSong_Clicked(object sender, EventArgs e)
@@ -51,7 +55,10 @@ namespace MobMusicApp
 
         private void songsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-
+            Song s = e.SelectedItem as Song;
+            dc.Max = s.Length;
+            dc.CurrentSong = s.Name;
+            //ME.Source = s.FilePath;
         }
     }
     

@@ -1,20 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace MobMusicApp
 {
     class DataCollections : INotifyPropertyChanged
     {
         string filePathPlaylists = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Playlists.xml");
+        string filePathSongsInFiles = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songs.xml");
         private ObservableCollection<Song> _Songs;
-
+        private TimeSpan _Max;
+        public TimeSpan Max { 
+            get => _Max;
+            set
+            {
+                _Max = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Max)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Time)));
+            } 
+        }
+        public string Time { get => TimeSpan.Zero.ToString() + " - " + Max;}
+        private string _CurrentSong;
+        public string CurrentSong { 
+            get => "Now Playing: " + _CurrentSong; 
+            set 
+            {
+                _CurrentSong = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentSong)));
+            }
+        }
         public ObservableCollection<Song> Songs
         {
             get { return _Songs; }
@@ -57,11 +74,11 @@ namespace MobMusicApp
         {
             if (choice == 1)
             {
-                Songs = ReadSongsInPlaylistFromXml("asdf");
+                
             }
             if (choice == 2)
             {
-                SongsInFiles = new ObservableCollection<Song>();
+                SongsInFiles = ReadSongsInFilesFromXml();
             }
             else
             {
@@ -90,30 +107,16 @@ namespace MobMusicApp
         }
         public void WritePlaylistToXml(Playlist play)
         {
-            
-            //if (!File.Exists(filePathPlaylists))
-            //{
-            //    XDocument doc = new XDocument(
-            //    new XElement("Playlists",
-            //        new XElement("Playlist",
-            //            new XAttribute("Name", play.Name),
-            //            new XAttribute("Size", play.Size)
-            //        )
-            //    ));
-            //    doc.Save(filePathPlaylists);
-            //}
-            //else
-            //{
-                XDocument doc = XDocument.Load(filePathPlaylists);
-                XElement playlist = new XElement("Playlist");
-                playlist.SetAttributeValue("Name", play.Name);
-                playlist.SetAttributeValue("Size", play.Size);
-                doc.Root.Add(playlist);
-                doc.Save(filePathPlaylists);
-            //}
+            XDocument doc = XDocument.Load(filePathPlaylists);
+            XElement playlist = new XElement("Playlist");
+            playlist.SetAttributeValue("Name", play.Name);
+            playlist.SetAttributeValue("Size", play.Size);
+            doc.Root.Add(playlist);
+            doc.Save(filePathPlaylists);
         }
         public ObservableCollection<Song> ReadSongsInPlaylistFromXml(string playlistName)
         {
+
             var list = new ObservableCollection<Song>();
             XmlDocument doc = new XmlDocument();
             doc.Load(filePathPlaylists);
@@ -142,6 +145,43 @@ namespace MobMusicApp
             playlistElement.AppendChild(song);
             doc.Save(filePathPlaylists);
         }
+        public void WriteSongsInFilesToXml(Song s)
+        {
+            if (!File.Exists(filePathSongsInFiles))
+            {
+                XDocument doc1 = new XDocument(
+                new XElement("Songs"));
+                doc1.Save(filePathSongsInFiles);
+            }
+            XDocument doc123 = XDocument.Load(filePathSongsInFiles);
+            XElement sng = new XElement("Song");
+            sng.SetAttributeValue("Name", s.Name);
+            sng.SetAttributeValue("Length", s.Length.ToString());
+            sng.SetAttributeValue("FilePath", s.FilePath);
+            doc123.Root.Add(sng);
+            doc123.Save(filePathSongsInFiles);
+        }
+        public ObservableCollection<Song> ReadSongsInFilesFromXml()
+        {
+            if (!File.Exists(filePathSongsInFiles))
+            {
+                XDocument doc1 = new XDocument(
+                new XElement("Songs"));
+                doc1.Save(filePathSongsInFiles);
+            }
+            var list = new ObservableCollection<Song>();
+            XDocument doc = XDocument.Load(filePathSongsInFiles);
+            foreach (var elm in doc.Root.Elements())
+            {
+                Song s = new Song(
+                elm.Attribute("Name").Value,
+                TimeSpan.Parse(elm.Attribute("Length").Value),
+                elm.Attribute("FilePath").Value
+                );
+                list.Add(s);
+            }
+            return list;
+        }
         static XmlAttribute CreateAttribute(XmlDocument doc, string name, string value)
         {
             XmlAttribute attribute = doc.CreateAttribute(name);
@@ -168,7 +208,7 @@ namespace MobMusicApp
         public string Name { get; set; }
         public TimeSpan Length { get; set; }
         public string FilePath { get; set; }
-        public Song(string name, TimeSpan length , string filePath)
+        public Song(string name, TimeSpan length, string filePath)
         {
             Name = name;
             Length = length;

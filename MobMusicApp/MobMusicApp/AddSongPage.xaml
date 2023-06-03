@@ -33,7 +33,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="AddSong" Background="#bae8e8" Margin="5,20,5,20" Text="Add Song"></Button>
+            <Button x:Name="AddSong" Background="#bae8e8" Margin="5,20,5,20" Text="Add Song" Clicked="AddSong_Clicked"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

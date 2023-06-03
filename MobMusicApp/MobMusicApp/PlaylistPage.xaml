@@ -34,12 +34,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="{Binding CurrentSong}"/>
-            <Grid ColumnDefinitions="Auto, Auto, Auto" RowDefinitions="Auto" Margin="0" HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Grid.Column="0" Text="{Binding TimeProgress}"/>
-                <Label Grid.Column="1" Text="-"/>
-                <Label Grid.Column="2" Text="{Binding Length}"/>
-            </Grid>
+            <Label Text="{Binding CurrentSong}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
+            <Label Text="{Binding Time}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Slider x:Name="SongProgress" ThumbColor="#bae8e8" Margin="10,10"></Slider>
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="50" HorizontalOptions="Center" VerticalOptions="Center">
 
@@ -72,7 +68,7 @@
 
             </Grid>
             <Button x:Name="AddSong" Background="#bae8e8" Margin="20,10,20,10" Text="Add song" Clicked="AddSong_Clicked"></Button>
-            <xct:MediaElement AutoPlay="False"/>
+            <xct:MediaElement x:Name="ME" AutoPlay="True"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
