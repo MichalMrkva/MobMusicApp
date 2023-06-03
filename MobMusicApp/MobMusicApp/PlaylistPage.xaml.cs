@@ -16,17 +16,17 @@ namespace MobMusicApp
 
         public bool IsPlaying { get; set; } = false;
         public bool FirstSongSelected { get; set; } = false;
-        static DataCollections dc = new DataCollections(1);
+        DataCollections dc = new DataCollections(1);
         public PlaylistPage()
         {
             InitializeComponent();
             BindingContext = dc;
-
+            PlaylistsPage.Load += LoadPlaylist;
         }
-        public static void LoadPlaylist(string PlaylistName)
+        public void LoadPlaylist(string PlaylistName)
         {
-            dc.ReadSongsInPlaylistFromXml(PlaylistName);
-            
+            dc.Songs.Clear();
+            dc.Songs = dc.ReadSongsInPlaylistFromXml(PlaylistName);
         }
         private void AddSong_Clicked(object sender, EventArgs e)
         {

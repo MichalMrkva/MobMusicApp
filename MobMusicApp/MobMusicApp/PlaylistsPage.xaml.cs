@@ -11,6 +11,8 @@ namespace MobMusicApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PlaylistsPage : ContentPage
     {
+        public static event Loader Load;
+        public delegate void Loader(string PlaylistName);
         public bool CreatingPlaylist = false;
         DataCollections dc = new DataCollections(3);
         public PlaylistsPage()
@@ -19,13 +21,6 @@ namespace MobMusicApp
             PlaylistNameEntry.Text = "";
             BindingContext = dc;
         }
-
-        private void playlistsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            //Playlist selectedPlaylist = e.SelectedItem as Playlist;
-            PlaylistPage.LoadPlaylist("ahoj");
-        }
-
         private void Addplaylist_Clicked(object sender, EventArgs e)
         {
             
@@ -53,6 +48,12 @@ namespace MobMusicApp
             }
             CreatingPlaylist = !CreatingPlaylist;
 
+        }
+
+        private void playlistsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            Playlist p = e.SelectedItem as Playlist;
+            Load.Invoke(p.Name);
         }
     }
 }
