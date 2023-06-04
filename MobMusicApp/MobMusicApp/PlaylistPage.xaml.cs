@@ -25,6 +25,8 @@ namespace MobMusicApp
         }
         public void LoadPlaylist(string PlaylistName)
         {
+            AddSong.IsVisible = true;
+            dc.CurPlaylist = PlaylistName;
             ME.Source = null;
             if (dc.Songs != null)
             {

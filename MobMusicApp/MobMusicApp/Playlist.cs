@@ -22,6 +22,16 @@ namespace MobMusicApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Time)));
             } 
         }
+        private string _CurPlaylist;
+        public string CurPlaylist 
+        {
+            get => _CurPlaylist; 
+            set 
+            {
+                _CurPlaylist = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurPlaylist)));
+            }
+        }
         public string Time { get => TimeSpan.Zero.ToString() + " - " + Max;}
         private string _CurrentSong;
         public string CurrentSong { 
