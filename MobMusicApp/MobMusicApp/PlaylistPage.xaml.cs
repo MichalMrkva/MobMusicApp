@@ -21,6 +21,7 @@ namespace MobMusicApp
             InitializeComponent();
             BindingContext = dc;
             PlaylistsPage.Load += LoadPlaylist;
+            AddSongPage.Load += LoadPlaylist;
         }
         public void LoadPlaylist(string PlaylistName)
         {

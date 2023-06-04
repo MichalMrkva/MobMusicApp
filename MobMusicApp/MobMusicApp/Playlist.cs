@@ -11,6 +11,7 @@ namespace MobMusicApp
     {
         string filePathPlaylists = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Playlists.xml");
         string filePathSongsInFiles = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songs.xml");
+        public static string currentPlaylist;
         private TimeSpan _Max;
         public TimeSpan Max { 
             get => _Max;

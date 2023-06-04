@@ -13,6 +13,8 @@ namespace MobMusicApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AddSongPage : ContentPage
     {
+        public static event Loader Load;
+        public delegate void Loader(string PlaylistName);
         DataCollections dc = new DataCollections(2);
         public AddSongPage()
         {
@@ -50,6 +52,14 @@ namespace MobMusicApp
             dc.WriteSongsInToPlaylist("Name2", s2);
             dc.WriteSongsInToPlaylist("Name2", s3);
             dc.WriteSongsInToPlaylist("Name2", s4);
+        }
+
+        private void songsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            Song song = e.SelectedItem as Song;
+            dc.WriteSongsInToPlaylist(DataCollections.currentPlaylist, song);
+            Load.Invoke(DataCollections.currentPlaylist);
+
         }
     }
 }

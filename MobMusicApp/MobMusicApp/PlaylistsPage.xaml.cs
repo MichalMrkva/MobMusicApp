@@ -53,6 +53,7 @@ namespace MobMusicApp
         private void playlistsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             Playlist p = e.SelectedItem as Playlist;
+            DataCollections.currentPlaylist = p.Name;
             Load.Invoke(p.Name);
         }
     }
