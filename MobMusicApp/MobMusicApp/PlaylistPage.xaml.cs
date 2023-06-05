@@ -63,6 +63,11 @@ namespace MobMusicApp
             dc.CurrentSong = s.Name;
             //ME.Source = s.FilePath;
         }
+
+        private void Delete_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
     
 }

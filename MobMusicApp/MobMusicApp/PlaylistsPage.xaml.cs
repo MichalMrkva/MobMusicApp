@@ -56,5 +56,10 @@ namespace MobMusicApp
             DataCollections.currentPlaylist = p.Name;
             Load.Invoke(p.Name);
         }
+
+        private void Delete_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

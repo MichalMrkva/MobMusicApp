@@ -24,8 +24,10 @@
                                         Text="{Binding Length}"
                                         />
                                     <Button
+                                        x:Name="Delete"
                                         Grid.Column="2"
                                         Text="Delete"
+                                        Clicked="Delete_Clicked"
                                         />
                                 </Grid>
                             </ViewCell.View>

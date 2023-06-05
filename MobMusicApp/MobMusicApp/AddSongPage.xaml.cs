@@ -64,11 +64,11 @@ namespace MobMusicApp
                 });
                 if (file != null)
                 {
-                    SongNameEntry.IsVisible = true;  //edit
+                    SongNameEntry.IsVisible = true;//přidat nový button, který se zobrazí po vybrání
                     string filePath = file.FullPath;
                     song = new Song(
                         "",
-                        GetMp3Duration(filePath),
+                        GetMp3Duration(filePath),//edit přesun souboru do aplikace 
                         filePath
                         );
                     dc.WriteSongsInFilesToXml(song);//edit dat to dofunkce aplikace
@@ -99,9 +99,13 @@ namespace MobMusicApp
         }
         private void AddSongToPlaylist_Clicked(object sender, EventArgs e)
         {
-            dc.WriteSongsInToPlaylist(DataCollections.currentPlaylist, song);
+            dc.WriteSongsInToPlaylist(DataCollections.currentPlaylist, song);//test zdali to funguje
             Load.Invoke(DataCollections.currentPlaylist);
             Navigation.PopAsync();
+        }
+        private void Delete_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }
