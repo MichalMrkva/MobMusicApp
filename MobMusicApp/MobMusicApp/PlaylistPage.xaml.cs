@@ -13,8 +13,8 @@ namespace MobMusicApp
     public partial class PlaylistPage : ContentPage
     {
 
-        public bool IsPlaying { get; set; } = false;
-        public bool FirstSongSelected { get; set; } = true;
+        public bool IsPlaying = false;
+        public bool FirstSongSelected = true;
         DataCollections dc = new DataCollections(1);
         public PlaylistPage()
         {

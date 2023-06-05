@@ -64,14 +64,14 @@ namespace MobMusicApp
                 });
                 if (file != null)
                 {
-                    SongNameEntry.IsVisible = true;
+                    SongNameEntry.IsVisible = true;  //edit
                     string filePath = file.FullPath;
-                    Song s = new Song(
+                    song = new Song(
                         "",
                         GetMp3Duration(filePath),
                         filePath
                         );
-                    dc.WriteSongsInFilesToXml(s);
+                    dc.WriteSongsInFilesToXml(song);//edit dat to dofunkce aplikace
                     dc.ReadSongsInFilesFromXml();
                     file = null;
                 }

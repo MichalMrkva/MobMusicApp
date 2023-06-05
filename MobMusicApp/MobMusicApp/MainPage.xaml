@@ -5,8 +5,8 @@
             xmlns:local="clr-namespace:MobMusicApp"
             NavigationPage.HasNavigationBar="False"
             BarBackground="#2c698d"
-            SelectedTabColor="Black"
-            UnselectedTabColor="AliceBlue"
+            SelectedTabColor="AliceBlue"
+            UnselectedTabColor="Gray"
             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
             android:TabbedPage.ToolbarPlacement="Bottom"
             >
