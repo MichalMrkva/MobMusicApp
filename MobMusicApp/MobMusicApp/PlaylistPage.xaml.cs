@@ -40,6 +40,7 @@ namespace MobMusicApp
         {
             if (!AddSong.IsVisible)
             {
+                CurrentPlaylistLabel.IsVisible = true;
                 AddSong.IsVisible = true;
                 songsLv.IsVisible = true;
                 nowPlayingLabel.IsVisible = true;
