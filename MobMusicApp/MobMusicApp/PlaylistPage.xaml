@@ -45,7 +45,7 @@
             </ListView>
             <Label x:Name="nowPlayingLabel" IsVisible="false" Text="{Binding CurrentSong}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
             <Label x:Name="timeLabel" IsVisible="false" Text="{Binding Time}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-            <Slider x:Name="songProgress" IsVisible="false" ThumbColor="#bae8e8" Margin="10,10" ValueChanged="songProgress_ValueChanged" DragCompleted="songProgress_DragCompleted" TickFrequency="1" Maximum="1"/>
+            <Slider x:Name="songProgress" IsVisible="false" ThumbColor="#bae8e8" Margin="10,10" ValueChanged="songProgress_ValueChanged" DragCompleted="songProgress_DragCompleted" Maximum="1"/>
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="50" HorizontalOptions="Center" VerticalOptions="Center">
 
                 <ImageButton
