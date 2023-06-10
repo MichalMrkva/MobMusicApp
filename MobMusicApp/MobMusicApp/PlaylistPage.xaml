@@ -6,8 +6,14 @@
              Background="Gray">
     <ContentPage.Content>
         <StackLayout>
-            <Label Margin="0,10,0,0" TextColor="Black" Text="{Binding CurPlaylist}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
-            <ListView Background="#bae8e8" Margin="5,5,5,0" x:Name="songsLv" SeparatorColor="Gray" ItemsSource="{Binding Songs}" ItemSelected="songsLv_ItemSelected">
+            <Label x:Name="CurrentPlaylistLabel" Margin="0,10,0,0" TextColor="Black" Text="{Binding CurPlaylist}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
+            <ListView IsVisible="false" Background="#bae8e8" Margin="5,5,5,0" x:Name="songsLv" SeparatorColor="Gray" ItemsSource="{Binding Songs}" ItemSelected="songsLv_ItemSelected">
+                <ListView.Header>
+                    <Grid ColumnDefinitions="1*,1.28*">
+                        <Label Grid.Column="0" Text="Název" TextColor="Black" VerticalTextAlignment="Center" Margin="5" />
+                        <Label Grid.Column="1" Text="Délka" TextColor="Black" VerticalTextAlignment="Center" Margin="5"/>
+                    </Grid>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -37,22 +43,25 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label Text="{Binding CurrentSong}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
-            <Label Text="{Binding Time}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-            <Slider x:Name="SongProgress" ThumbColor="#bae8e8" Margin="10,10"></Slider>
+            <Label x:Name="nowPlayingLabel" IsVisible="false" Text="{Binding CurrentSong}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="Body"/>
+            <Label x:Name="timeLabel" IsVisible="false" Text="{Binding Time}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Slider x:Name="songProgress" IsVisible="false" ThumbColor="#bae8e8" Margin="10,10" ValueChanged="songProgress_ValueChanged" DragCompleted="songProgress_DragCompleted" TickFrequency="1" Maximum="1"/>
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="50" HorizontalOptions="Center" VerticalOptions="Center">
 
                 <ImageButton
                     x:Name="Back"
+                    IsVisible="false"
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="30,0,0,0"
                     Padding="5"
                     Source="Back.png"
+                    Clicked="Back_Clicked"
                     />
 
                 <ImageButton
                     x:Name="Pause"
+                    IsVisible="false"
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="15,0,15,0"
@@ -62,16 +71,19 @@
                     />
                 <ImageButton
                     x:Name="Next"
+                    IsVisible="false"
                     Grid.Row="0"
                     Grid.Column="2"
                     Margin="0,0,30,0"
                     Padding="5"
                     Source="Next.png"
+                    Clicked="Next_Clicked"
                     />
 
             </Grid>
             <Button x:Name="AddSong" Background="#bae8e8" Margin="20,10,20,10" Text="Add song" Clicked="AddSong_Clicked" IsVisible="false"></Button>
-            <xct:MediaElement x:Name="ME" AutoPlay="True"/>
+            <Label x:Name="AlertLab" Text="Choose Playlist!" FontSize="30" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <xct:MediaElement VerticalOptions="FillAndExpand" HeightRequest="1" MediaEnded="ME_MediaEnded" x:Name="ME" AutoPlay="False" Volume="1"  IsVisible="true" Background="Gray"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

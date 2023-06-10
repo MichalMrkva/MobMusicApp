@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using NAudio.Wave;
+using TagLib;
+using Android.Widget;
 
 namespace MobMusicApp
 {
@@ -17,7 +18,8 @@ namespace MobMusicApp
         public static event Loader Load;
         public delegate void Loader(string PlaylistName);
         DataCollections dc = new DataCollections(2);
-        Song song;
+        Song song1;
+        Song song2;
         public AddSongPage()
         {
             InitializeComponent();
@@ -25,34 +27,6 @@ namespace MobMusicApp
         }
         private async void AddSong_Clicked(object sender, EventArgs e)
         {
-            //Song s1 = new Song("Ahoj333", TimeSpan.FromSeconds(93456), "FilePath");
-            //Song s2 = new Song("Ahoj154", TimeSpan.FromSeconds(55555), "FilePath");
-            //Song s3 = new Song("Ahoj512", TimeSpan.FromSeconds(176), "FilePath");
-            //Song s4 = new Song("Ahoj654", TimeSpan.FromSeconds(98625), "FilePath");
-            //dc.WriteSongsInFilesToXml(s1);
-            //dc.WriteSongsInFilesToXml(s2);
-            //dc.WriteSongsInFilesToXml(s3);
-            //dc.WriteSongsInFilesToXml(s4);
-            //Playlist p1 = new Playlist("Name1", 5);
-            //Playlist p2 = new Playlist("Name2", 85);
-            //Playlist p3 = new Playlist("Name3", 4);
-            //Playlist p4 = new Playlist("Name4", 1);
-            //dc.WritePlaylistToXml(p1);
-            //dc.WritePlaylistToXml(p2);
-            //dc.WritePlaylistToXml(p3);
-            //dc.WritePlaylistToXml(p4);
-            //dc.WriteSongsInToPlaylist("Name1", s1);
-            //dc.WriteSongsInToPlaylist("Name1", s2);
-            //dc.WriteSongsInToPlaylist("Name1", s3);
-            //dc.WriteSongsInToPlaylist("Name1", s4);
-            //dc.WriteSongsInToPlaylist("Name2", s1);
-            //dc.WriteSongsInToPlaylist("Name2", s2);
-            //dc.WriteSongsInToPlaylist("Name2", s3);
-            //dc.WriteSongsInToPlaylist("Name2", s4);
-            //dc.WriteSongsInToPlaylist("Name2", s1);
-            //dc.WriteSongsInToPlaylist("Name2", s2);
-            //dc.WriteSongsInToPlaylist("Name2", s3);
-            //dc.WriteSongsInToPlaylist("Name2", s4);
             try
             {
                 var file = await FilePicker.PickAsync(new PickOptions
@@ -64,15 +38,25 @@ namespace MobMusicApp
                 });
                 if (file != null)
                 {
-                    SongNameEntry.IsVisible = true;//přidat nový button, který se zobrazí po vybrání
-                    string filePath = file.FullPath;
-                    song = new Song(
-                        "",
-                        GetMp3Duration(filePath),//edit přesun souboru do aplikace 
-                        filePath
+                    string name = Path.GetFileName(file.FullPath);
+                    try
+                    {
+                        System.IO.File.Copy(file.FullPath, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
+                    }
+                    catch (Exception)
+                    {
+                        Toast.MakeText(Android.App.Application.Context, "Tato písnička byla již přidána!", ToastLength.Short).Show();
+                        return;
+                    }
+                    song1 = new Song(
+                        name,
+                        NoMiliseconds(TagLib.File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), name)).Properties.Duration)                  
                         );
-                    dc.WriteSongsInFilesToXml(song);//edit dat to dofunkce aplikace
+                    dc.SongsInFiles.Add(NewSong(song1));
+                    dc.WriteSongsInFilesToXml(song1);
                     dc.ReadSongsInFilesFromXml();
+                    Toast.MakeText(Android.App.Application.Context,$"Písnička {song1.Name} byla přidána!", ToastLength.Short).Show();
+                    song1 = null;
                     file = null;
                 }
             }
@@ -83,29 +67,41 @@ namespace MobMusicApp
         }
         private void songsLv_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            song = e.SelectedItem as Song;
+            song2 = e.SelectedItem as Song;
             AddSongToPlaylist.IsVisible = true;
-            AddSong.IsVisible = false;
-            SongNameEntry.IsVisible = false;
         }
-        public TimeSpan GetMp3Duration(string filePath)
-        {
-            //using (var mp3FileReader = new Mp3FileReader(filePath))
-            //{
-            //    var duration = mp3FileReader.TotalTime;
-            //    return duration;
-            //}
-            return TimeSpan.FromSeconds(123456);
-        }
+        
         private void AddSongToPlaylist_Clicked(object sender, EventArgs e)
         {
-            dc.WriteSongsInToPlaylist(DataCollections.currentPlaylist, song);//test zdali to funguje
-            Load.Invoke(DataCollections.currentPlaylist);
-            Navigation.PopAsync();
+            if (DataCollections.IsSongInPlaylist(song2.Name))
+            {
+                Toast.MakeText(Android.App.Application.Context, $"Písnička {song2.Name} byla již do toho to playlistu přidána!", ToastLength.Short).Show();
+            }
+            else
+            {
+                dc.WriteSongsInToPlaylist(DataCollections.currentPlaylist, song2);
+                Load.Invoke(DataCollections.currentPlaylist);
+                Navigation.PopAsync();
+                Toast.MakeText(Android.App.Application.Context, $"Písnička {song2.Name} byla přidána!", ToastLength.Short).Show();
+            }
+        }
+        private TimeSpan NoMiliseconds(TimeSpan time)
+        {
+            return new TimeSpan(time.Hours, time.Minutes, time.Seconds);
+        }
+        private Song NewSong(Song sng)
+        {
+            Song song = new Song(sng.Name, sng.Length);
+            return song;
         }
         private void Delete_Clicked(object sender, EventArgs e)
         {
-
+            Song song3 = ((Xamarin.Forms.Button)sender).BindingContext as Song;
+            dc.DeleteSongFromFiles(song3);
+            dc.SongsInFiles.Remove(song3);
+            song2 = null;
+            AddSongToPlaylist.IsVisible = false;
+            Toast.MakeText(Android.App.Application.Context, $"Písnička {song3.Name} byla odebrána!", ToastLength.Short).Show();
         }
     }
 }

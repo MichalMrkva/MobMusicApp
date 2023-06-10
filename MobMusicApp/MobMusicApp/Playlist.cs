@@ -32,7 +32,18 @@ namespace MobMusicApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurPlaylist)));
             }
         }
-        public string Time { get => TimeSpan.Zero.ToString() + " - " + Max;}
+        public string Time { get => CurrTime + " - " + Max;}
+        private TimeSpan _CurrTime;
+        public TimeSpan CurrTime
+        {
+            get => _CurrTime;
+            set
+            {
+                _CurrTime = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrTime)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Time)));
+            }
+        }
         private string _CurrentSong;
         public string CurrentSong { 
             get => "Now Playing: " + _CurrentSong; 
@@ -109,9 +120,7 @@ namespace MobMusicApp
             foreach (var elm in doc.Root.Elements())
             {
                 Playlist p = new Playlist(
-                    elm.Attribute("Name").Value,
-                    Int32.Parse(elm.Attribute("Size").Value)
-                    );
+                    elm.Attribute("Name").Value);
                 list.Add(p);
             }
             return list;
@@ -121,7 +130,6 @@ namespace MobMusicApp
             XDocument doc = XDocument.Load(filePathPlaylists);
             XElement playlist = new XElement("Playlist");
             playlist.SetAttributeValue("Name", play.Name);
-            playlist.SetAttributeValue("Size", play.Size);
             doc.Root.Add(playlist);
             doc.Save(filePathPlaylists);
         }
@@ -137,8 +145,7 @@ namespace MobMusicApp
             {
                 Song song = new Song(
                 elm.Attributes["Name"].Value,
-                TimeSpan.Parse(elm.Attributes["Length"].Value),
-                elm.Attributes["FilePath"].Value
+                TimeSpan.Parse(elm.Attributes["Length"].Value)
                 );
                 list.Add(song);
             }
@@ -152,7 +159,6 @@ namespace MobMusicApp
             XmlNode song = doc.CreateElement("Song");
             song.Attributes.Append(CreateAttribute(doc, "Name", s.Name));
             song.Attributes.Append(CreateAttribute(doc, "Length", s.Length.ToString()));
-            song.Attributes.Append(CreateAttribute(doc, "FilePath", s.FilePath));
             playlistElement.AppendChild(song);
             doc.Save(filePathPlaylists);
         }
@@ -168,7 +174,6 @@ namespace MobMusicApp
             XElement sng = new XElement("Song");
             sng.SetAttributeValue("Name", s.Name);
             sng.SetAttributeValue("Length", s.Length.ToString());
-            sng.SetAttributeValue("FilePath", s.FilePath);
             doc123.Root.Add(sng);
             doc123.Save(filePathSongsInFiles);
         }
@@ -186,8 +191,7 @@ namespace MobMusicApp
             {
                 Song s = new Song(
                 elm.Attribute("Name").Value,
-                TimeSpan.Parse(elm.Attribute("Length").Value),
-                elm.Attribute("FilePath").Value
+                TimeSpan.Parse(elm.Attribute("Length").Value)
                 );
                 list.Add(s);
             }
@@ -199,15 +203,97 @@ namespace MobMusicApp
             attribute.Value = value;
             return attribute;
         }
+        public void DeleteSongFromFiles(Song sng)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePathSongsInFiles);
+            XmlNodeList songNodes = xmlDoc.SelectNodes("//Song");
+            foreach (XmlNode songNode in songNodes)
+            {
+                XmlAttribute nameAttribute = songNode.Attributes["Name"];
+                if (nameAttribute != null && nameAttribute.Value == sng.Name)
+                {
+                    songNode.ParentNode.RemoveChild(songNode);
+                    break;
+                }
+            }
+            xmlDoc.Save(filePathSongsInFiles);
+            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), sng.Name));
+        }
+        public void DeleteSongFromPlaylist(Song sng)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePathPlaylists);
+            XmlNodeList playlistNodes = xmlDoc.SelectNodes("//Playlists/Playlist");
+            foreach (XmlNode playlistNode in playlistNodes)
+            {
+                XmlAttribute nameAttribute = playlistNode.Attributes["Name"];
+                if (nameAttribute != null && nameAttribute.Value == currentPlaylist)
+                {
+                    XmlNodeList songNodes = playlistNode.SelectNodes("./Song");
+                    foreach (XmlNode songNode in songNodes)
+                    {
+                        XmlAttribute songNameAttribute = songNode.Attributes["Name"];
+                        if (songNameAttribute != null && songNameAttribute.Value == sng.Name)
+                        {
+                            playlistNode.RemoveChild(songNode);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            xmlDoc.Save(filePathPlaylists);
+        }
+        public void DeletePlaylistFromXml(Playlist playlist)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePathPlaylists);
+            XmlNodeList playlistNodes = xmlDoc.SelectNodes("//Playlists/Playlist");
+            foreach (XmlNode playlistNode in playlistNodes)
+            {
+                XmlAttribute nameAttribute = playlistNode.Attributes["Name"];
+                if (nameAttribute != null && nameAttribute.Value == playlist.Name)
+                {
+                    playlistNode.ParentNode.RemoveChild(playlistNode);
+                    break;
+                }
+            }
+            xmlDoc.Save(filePathPlaylists);
+        }
+        public static bool IsSongInPlaylist(string songName)
+        { 
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Playlists.xml"));
+            XmlNodeList playlistNodes = xmlDoc.SelectNodes("//Playlists/Playlist");
+            foreach (XmlNode playlistNode in playlistNodes)
+            {
+                XmlAttribute nameAttribute = playlistNode.Attributes["Name"];
+                if (nameAttribute != null && nameAttribute.Value == currentPlaylist)
+                {
+                    XmlNodeList songNodes = playlistNode.SelectNodes("./Song");
+                    foreach (XmlNode songNode in songNodes)
+                    {
+                        XmlAttribute songNameAttribute = songNode.Attributes["Name"];
+                        if (songNameAttribute != null && songNameAttribute.Value == songName)
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return false;
+        }
+
     }
     class Playlist
     {
         public string Name { get; set; }
-        public int Size { get; set; }
-        public Playlist(string name, int size)
+        public Playlist(string name)
         {
             Name = name;
-            Size = size;
         }
         public Playlist()
         {
@@ -218,12 +304,10 @@ namespace MobMusicApp
     {
         public string Name { get; set; }
         public TimeSpan Length { get; set; }
-        public string FilePath { get; set; }
-        public Song(string name, TimeSpan length, string filePath)
+        public Song(string name, TimeSpan length)
         {
             Name = name;
             Length = length;
-            FilePath = filePath;
         }
     }
 }

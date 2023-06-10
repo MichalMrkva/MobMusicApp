@@ -7,26 +7,25 @@
     <ContentPage.Content>
         <StackLayout>
             <ListView Background="#bae8e8" Margin="5" x:Name="playlistsLv" SeparatorColor="Gray" ItemsSource="{Binding Playlists}" ItemSelected="playlistsLv_ItemSelected">
+                <ListView.Header>
+                    <Grid ColumnDefinitions="1*">
+                        <Label Grid.Column="0" Text="Název" TextColor="Black" VerticalTextAlignment="Center" Margin="5" />
+                    </Grid>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Grid ColumnDefinitions="1.40*,*,auto">
+                                <Grid ColumnDefinitions="1.40*,auto">
                                     <Label
                                         Grid.Column="0"
                                         VerticalTextAlignment="Center"
                                         Margin="5"
                                         Text="{Binding Name}"
                                         />
-                                    <Label
-                                        Grid.Column="1"
-                                        VerticalTextAlignment="Center"
-                                        Margin="5"
-                                        Text="{Binding Size}"
-                                        />
                                     <Button
                                         x:Name="Delete"
-                                        Grid.Column="2"
+                                        Grid.Column="1"
                                         Text="Delete"
                                         Clicked="Delete_Clicked"
                                         />

@@ -6,6 +6,12 @@
     <ContentPage.Content>
         <StackLayout>
             <ListView Background="#bae8e8" Margin="5,5,5,0" x:Name="songsLv" SeparatorColor="Gray" ItemSelected="songsLv_ItemSelected" ItemsSource="{Binding SongsInFiles}">
+                <ListView.Header>
+                    <Grid ColumnDefinitions="1*,1.28*">
+                        <Label Grid.Column="0" Text="Název" TextColor="Black" VerticalTextAlignment="Center" Margin="5" />
+                        <Label Grid.Column="1" Text="Délka" TextColor="Black" VerticalTextAlignment="Center" Margin="5"/>
+                    </Grid>
+                </ListView.Header>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -35,9 +41,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="AddSongToPlaylist" Clicked="AddSongToPlaylist_Clicked" IsVisible="false"/>
-            <Entry x:Name="SongNameEntry" IsVisible="false"/>
-            <Button x:Name="AddSong" Background="#bae8e8" Margin="5,20,5,20" Text="Add Song" Clicked="AddSong_Clicked"></Button>
+            <Button x:Name="AddSongToPlaylist" Clicked="AddSongToPlaylist_Clicked" IsVisible="false" Text="Add Selected Song" Background="#bae8e8" Margin="5,20,5,0"/>
+            <Button x:Name="AddSong"  Background="#bae8e8" Margin="5,20,5,20" Text="Add Song" Clicked="AddSong_Clicked"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
